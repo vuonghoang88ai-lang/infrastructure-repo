@@ -22,7 +22,7 @@ source "proxmox-clone" "ubuntu" {
   vm_id       = 9002
   vm_name     = "Ubuntu-2204-Golden"
 
-  os_type      = "cloud-init"
+#  os_type      = "cloud-init"
   ssh_username = "ubuntu"
   ssh_password = "ubuntu"
   ssh_timeout  = "20m"
