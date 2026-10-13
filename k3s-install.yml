@@ -1,0 +1,38 @@
+---
+- name: Triển khai cụm K3s (Kubernetes)
+  hosts: all
+  become: yes
+  tasks:
+    - name: 1. Cài đặt K3s (Giữ nguyên mặc định để cài kèm Traefik Ingress)
+      shell: curl -sfL https://get.k3s.io | sh -
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: 2. Tạo thư mục .kube cho user ubuntu (Chuẩn Ansible)
+      file:
+        path: /home/ubuntu/.kube
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: 3. Sao chép và cấp quyền file Kubeconfig (Chuẩn Ansible)
+      copy:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: /home/ubuntu/.kube/config
+        remote_src: yes
+        owner: ubuntu
+        group: ubuntu
+        mode: '0600'
+
+    - name: 4. Sửa IP 127.0.0.1 thành IP mạng LAN thực tế của Node K3s
+      replace:
+        path: /home/ubuntu/.kube/config
+        regexp: '127\.0\.0\.1'
+        replace: "{{ ansible_host | default(inventory_hostname) }}"
+
+    - name: 5. Kéo file Kubeconfig về máy Jenkins để Jenkins điều khiển từ xa
+      fetch:
+        src: /home/ubuntu/.kube/config
+        dest: ~/.kube/config
+        flat: yes
