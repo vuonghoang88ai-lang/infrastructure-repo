@@ -18,10 +18,11 @@ source "proxmox-clone" "ubuntu" {
   password    = var.pve_password
   node        = "promox"
   
+  insecure_skip_tls_verify = true
   clone_vm    = "ubuntu-2204-cloudinit" # Tên của Base Template (VM 9000)
   vm_id       = 9002
   vm_name     = "Ubuntu-2204-Golden"
-
+  
 #  os_type      = "cloud-init"
   ssh_username = "ubuntu"
   ssh_password = "ubuntu"
