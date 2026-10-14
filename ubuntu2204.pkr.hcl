@@ -23,7 +23,7 @@ clone_vm    = "ubuntu-2204-cloudinit" # Tên của Base Template (VM 9000)
 vm_id       = 9002
 vm_name     = "Ubuntu-2204-Golden"
 
-Tắt hoàn toàn việc kiểm tra SSH để tránh lỗi treo do mất khóa Cloud-Init
+#Tắt hoàn toàn việc kiểm tra SSH để tránh lỗi treo do mất khóa Cloud-Init
 
 communicator = "none"
 }
