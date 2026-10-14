@@ -31,26 +31,22 @@ resource "proxmox_vm_qemu" "k3s_node" {
   count       = 1
   name        = "k3s-node-${count.index + 1}"
   target_node = "promox"
-  clone       = "Ubuntu-2204-Golden" # Tên của máy ảo 9002 vừa được Packer tạo ra
+  clone       = "Ubuntu-2204-Golden" 
 
   cores       = 4
   memory      = 4096
 
   agent       = 1
   os_type     = "cloud-init"
-  cloudinit_cdrom_storage = "local-lvm"
-  # Khai báo rõ card mạng để tránh lỗi tag -1 của Terraform
+
   network {
     model  = "virtio"
     bridge = "vmbr0"
   }
 
-  # Nội suy IP tịnh tiến: 192.168.2.110, 192.168.2.111...
   ipconfig0   = "ip=${cidrhost(var.network_cidr, var.k3s_ip_start + count.index)}/24,gw=${cidrhost(var.network_cidr, 1)}"
-
   ciuser      = "ubuntu"
 
-  # Bơm trực tiếp 2 ổ khóa vào máy ảo K3s qua Cloud-Init
   sshkeys = <<EOF
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCakUWqhtC0U2XvzM7ObpWQ8ue8VNp9/nooazzfP722gwk6WsJ/dyGDqQ1jMs4isABvPhc+mCb7o0K6bxGstIJLz/llYd+gjEQtTheSPvNu7kWZUAkAEyGt9CokY9H+nLwPB07MPDlTLp/7BklhtuKWWjiU49u57hCfIi+kyToxnHOnrRFS0Mfnj8wTQAMSqWXAOo1teC85NDEEHmoeGILEPxh3gGtXgjpzbbAiaZVnmaxLK5ZrAthrRet6rutU3Jtx7D3fUXbZdDN7B/sF8Ie3l+7UJuAo3mGc7vqFM+BouX/q2K5rjvLoNsFrnB52pFoLN6oB76qx2+iyBQNNBbI4XTkFtI9ZAKBzVo4Y7wChyRdqsXA53ohGG7hCxCHLyYOQLLVL+uk/bq4Oco3l7EfAWFtDVKhaixIHVjzDjQiShYH2folKtN/xwX5c4ZEOW9TYvn6z1U0htjlkS+x13ZDH0gCehzIJWmxjSunThw64QtxrMK5jNgMch4I0bVP4LoU8F0r4ondJeD+NEedS4enbZl42vgjiyOWcCyAIaJFy2BWbPYXva3FMB8YuoH0ilcuZXKVMJCTwWEKCPILRumoT0cEPySU4MFFoiiy5GjSHSPhvYKCeyDmU6xv1OhDRH0ntg+159O/1I3ef1LU8B5QjIHEmSAr4Q97W+D7b8/quZQ== jenkins@cicd
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID/Dwya71iSDkAlYlqgARn9HSifRc/eQUhIfKIN71qfA personal-key
