@@ -38,7 +38,7 @@ resource "proxmox_vm_qemu" "k3s_node" {
 
   agent       = 1
   os_type     = "cloud-init"
-
+  cloudinit_cdrom_storage = "local-lvm"
   # Khai báo rõ card mạng để tránh lỗi tag -1 của Terraform
   network {
     model  = "virtio"
