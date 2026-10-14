@@ -19,6 +19,8 @@ pipeline {
                 packer init ubuntu2204.pkr.hcl
                 packer build -var "pve_password=${PVE_PASS}" ubuntu2204.pkr.hcl
                 '''
+                // Bơm lại ổ Cloud-Init bị Packer tự động xóa mất
+                sh "sshpass -p '${PVE_PASS}' ssh -o StrictHostKeyChecking=no root@192.168.2.15 'qm set 9002 --ide2 local-lvm:cloudinit'"
             }
         }
         stage('🚀 Bước 3: Terraform - Cấp phát VM K3s mới') {
