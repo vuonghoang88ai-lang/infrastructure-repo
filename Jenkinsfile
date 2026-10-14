@@ -21,14 +21,20 @@ pipeline {
                 '''
             }
         }
+#        stage('🚀 Bước 3: Terraform - Cấp phát VM K3s mới') {
+#            steps {
+#                sh '''
+#                terraform init
+#                terraform apply -var="pve_password=${PVE_PASS}" -auto-approve
+#                '''
+#            }
+#        }
         stage('🚀 Bước 3: Terraform - Cấp phát VM K3s mới') {
             steps {
-                sh '''
-                terraform init
-                terraform apply -var="pve_password=${PVE_PASS}" -auto-approve
-                '''
-            }
-        }
+            sh 'terraform init -upgrade'
+            sh 'terraform apply -var="pve_password=${PVE_PASS}" -auto-approve'
+             }
+         }
         stage('⚙️ Bước 4: Ansible - Cài đặt K3s') {
             steps {
                 sh 'sleep 45'
