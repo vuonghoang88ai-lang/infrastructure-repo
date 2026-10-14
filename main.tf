@@ -32,16 +32,22 @@ resource "proxmox_vm_qemu" "k3s_node" {
   name        = "k3s-node-${count.index + 1}"
   target_node = "promox"
   clone       = "Ubuntu-2204-Golden" # Tên của máy ảo 9002 vừa được Packer tạo ra
-  
+
   cores       = 4
   memory      = 4096
-  
+
   agent       = 1
   os_type     = "cloud-init"
-  
+
+  # Khai báo rõ card mạng để tránh lỗi tag -1 của Terraform
+  network {
+    model  = "virtio"
+    bridge = "vmbr0"
+  }
+
   # Nội suy IP tịnh tiến: 192.168.2.110, 192.168.2.111...
   ipconfig0   = "ip=${cidrhost(var.network_cidr, var.k3s_ip_start + count.index)}/24,gw=${cidrhost(var.network_cidr, 1)}"
-  
+
   ciuser      = "ubuntu"
 
   # Bơm trực tiếp 2 ổ khóa vào máy ảo K3s qua Cloud-Init
