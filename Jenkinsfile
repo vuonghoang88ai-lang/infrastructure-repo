@@ -3,7 +3,7 @@ pipeline {
     environment {
         VAULT_ADDR = 'https://127.0.0.1:8200'
         VAULT_SKIP_VERIFY = 'true'
-        VAULT_TOKEN = credentials('vault-root-token') 
+        VAULT_TOKEN = credentials('vault-root-token')
     }
     stages {
         stage('🔓 Bước 1: Mở két sắt Vault lấy Mật khẩu') {
@@ -21,20 +21,12 @@ pipeline {
                 '''
             }
         }
-#        stage('🚀 Bước 3: Terraform - Cấp phát VM K3s mới') {
-#            steps {
-#                sh '''
-#                terraform init
-#                terraform apply -var="pve_password=${PVE_PASS}" -auto-approve
-#                '''
-#            }
-#        }
         stage('🚀 Bước 3: Terraform - Cấp phát VM K3s mới') {
             steps {
-            sh 'terraform init -upgrade'
-            sh 'terraform apply -var="pve_password=${PVE_PASS}" -auto-approve'
-             }
-         }
+                sh 'terraform init -upgrade'
+                sh 'terraform apply -var="pve_password=${PVE_PASS}" -auto-approve'
+            }
+        }
         stage('⚙️ Bước 4: Ansible - Cài đặt K3s') {
             steps {
                 sh 'sleep 45'
